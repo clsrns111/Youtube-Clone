@@ -1,0 +1,11 @@
+extends layout/main_layout.pug
+include mixins/video
+
+block content
+    h2 어서오세요 여기 인기 급상승 영상들이 있습니다.
+    if error
+        p=error
+    each contents in videos
+       +video(contents)  
+    else 
+        li 찾으려는 내용이 없습니다.

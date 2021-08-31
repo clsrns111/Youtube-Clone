@@ -1,0 +1,18 @@
+global router
+/ -> Home
+/join -> Join
+/login -> Login
+/search -> Search  
+
+user router
+/users/:id -> user profile
+/users/logout -> user logout
+/users/edit -> Edit Profile
+/users/delete -> Delete Profile  
+
+video router 
+/videos/:id -> Watch Video
+/videos/:id/edit -> Edit Video 
+/videos/:id/delete -> Delete Video
+/videos/upload -> Upload Video   
+

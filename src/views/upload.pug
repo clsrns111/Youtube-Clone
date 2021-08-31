@@ -1,0 +1,10 @@
+extends layout/main_layout.pug
+
+block content
+    if error 
+        span=error
+    form(method="POST")
+      input(placeholder="Title", required, type="text", name="title", )
+      input(placeholder="Description", required, type="text", name="description", )
+      input(placeholder="Hashtags, separated by comma.", required, type="text", name="hashtag")
+      input(type="submit", value="Upload Video")

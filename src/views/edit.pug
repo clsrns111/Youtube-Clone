@@ -1,0 +1,8 @@
+extends layout/main_layout.pug
+block content 
+    h4 영상제목 변경 
+    form(method='POST') 
+        input(placeholder='Video Title' value=video.title name='title' )    
+        input(placeholder='Video Description ' value=video.description name='description' )    
+        input(placeholder='Video Hashtag' value=video.hashtag name='hashtag' )    
+        input(value='Save' type='submit')
