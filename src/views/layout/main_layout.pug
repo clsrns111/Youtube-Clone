@@ -7,10 +7,25 @@ html(lang="en")
         link(rel="stylesheet" href="https://unpkg.com/mvp.css")
         title #{title} | Youtube
     body
+
         nav 
             ul 
                 li 
-                    a(href="/video/upload") 비디오 업로드하기 
+                    a(href="/") 홈 
+                li
+                    a(href="/search") 검색하기 
+                if loggedInUser
+                    li
+                        a(href="/users/edit") #{loggedInUser.name} 님
+                    li
+                        a(href="/video/upload") 비디오 업로드하기 
+                    li
+                        a(href="/users/logout") 로그아웃
+                else        
+                    li
+                        a(href="/join") 회원가입
+                    li
+                        a(href="/login") 로그인 
         header 
               h1=title
         main

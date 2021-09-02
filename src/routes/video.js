@@ -10,17 +10,24 @@ const {
   video_Edit_Controller_Post,
   video_Upload_Controller_Post,
 } = require("../controllers/videoController");
+const { protectorMiddleware } = require("../middleware");
 
 router
   .route("/:id([0-9a-f]{24})/edit")
+  .all(protectorMiddleware)
   .post(video_Edit_Controller_Post)
   .get(video_Edit_Controller);
 
 router.get("/:id([0-9a-f]{24})", video_Watch_Controller);
-router.get("/:id([0-9a-f]{24})/delete", video_Delete_Controller);
+router.get(
+  "/:id([0-9a-f]{24})/delete",
+  protectorMiddleware,
+  video_Delete_Controller
+);
 
 router
   .route("/upload")
+  .all(protectorMiddleware)
   .get(video_Upload_Controller)
   .post(video_Upload_Controller_Post);
 

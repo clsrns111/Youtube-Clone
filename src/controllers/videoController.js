@@ -1,9 +1,9 @@
 const { VideoModel, formatHashtag } = require("../models/Video");
+const FileAPI = require("file-api");
 
 const video_Watch_Controller = async (req, res) => {
   const _id = req.params.id;
   const video = await VideoModel.findById(_id);
-  console.log(video);
   if (!video) {
     return res.render("404");
   }
@@ -34,8 +34,10 @@ const video_Edit_Controller_Post = async (req, res) => {
   return res.redirect(`/video/${_id}`);
 };
 
-const video_Delete_Controller = (req, res) => {
-  res.send("videoDelete");
+const video_Delete_Controller = async (req, res) => {
+  const _id = req.params.id;
+  await VideoModel.findByIdAndDelete(_id);
+  return res.redirect("/");
 };
 
 const video_Comments_Controller = (req, res) => {
@@ -46,8 +48,16 @@ const video_CommentDelete_Controller = (req, res) => {
   res.send("videoDelete");
 };
 
-const video_Search_Controller = (req, res) => {
-  res.send("search");
+const video_Search_Controller = async (req, res) => {
+  const { search } = req.query;
+  if (search) {
+    const regex = new RegExp(search, "i");
+    const videos = await VideoModel.find({ title: regex });
+
+    res.render("search", { title: "Search", videos });
+  } else {
+  }
+  res.render("search", { title: "Search" });
 };
 
 const video_Upload_Controller = (req, res) => {
@@ -55,10 +65,14 @@ const video_Upload_Controller = (req, res) => {
 };
 
 const video_Upload_Controller_Post = async (req, res) => {
-  const { title, description, hashtag } = req.body;
+  const { title, description, hashtag, video } = req.body;
+  const reader = new global.FileReader().readAsDataURL(video);
+
+  console.log(reader);
   try {
     await VideoModel.create({
       title,
+      video,
       description,
       hashtag: VideoModel.formatHashtag(hashtag),
     });
@@ -71,7 +85,8 @@ const video_Upload_Controller_Post = async (req, res) => {
 const home_Controller = async (req, res) => {
   try {
     const videos = await VideoModel.find();
-    res.render("home", { title: "home", videos });
+    const loggedIn = req.session.loggedIn;
+    res.render("home", { title: "home", videos, loggedIn });
   } catch (error) {
     console.log(error);
   }
