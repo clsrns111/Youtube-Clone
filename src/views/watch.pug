@@ -2,9 +2,11 @@ extends layout/main_layout.pug
 include mixins/video
 
 block content
+    video(src=`/${video.videoUrl}` ,controls) 
     h2=video.description
     small=video.hashtag
     h3 #{video.views} #{video.views === 1? "view" : "views"} 
-    a(href=`${video.id}/edit`) Edit Video &rarr;
-    br
-    a(href=`${video.id}/delete`) Delete Video &rarr;
+    if auth
+        a(href=`${video.id}/edit`) Edit Video &rarr;
+        br
+        a(href=`${video.id}/delete`) Delete Video &rarr;

@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 const {
+  user_Profile_Controller,
   user_Logout_Controller,
   user_Edit_Controller,
   user_Delete_Controller,
@@ -17,7 +20,7 @@ router
   .route("/edit")
   .all(protectorMiddleware)
   .get(user_Edit_Controller)
-  .post(user_Edit_Controller_Post);
+  .post(upload.single("avatarUrl"), user_Edit_Controller_Post);
 
 router
   .route("/change_password")
@@ -25,6 +28,7 @@ router
   .get(user_Change_Password_Controller)
   .post(user_Change_Password_Controller_Post);
 
+router.get("/:id", user_Profile_Controller);
 router.get("/logout", protectorMiddleware, user_Logout_Controller);
 router.get("/github/start", publicMiddleware, user_Github_Controller);
 router.get("/github/finish", publicMiddleware, user_Github_Finish_Controller);

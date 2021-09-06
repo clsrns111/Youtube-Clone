@@ -1,15 +1,19 @@
 const { VideoModel, formatHashtag } = require("../models/Video");
-const FileAPI = require("file-api");
+const UserModel = require("../models/User");
 
 const video_Watch_Controller = async (req, res) => {
   const _id = req.params.id;
-  const video = await VideoModel.findById(_id);
+  const video = await VideoModel.findById(_id).populate("creator");
+  const auth = video.creator._id.toString() === req.session.user._id;
+
   if (!video) {
     return res.render("404");
   }
+
   return res.render("watch", {
     title: video.title,
     video,
+    auth,
   });
 };
 
@@ -65,17 +69,27 @@ const video_Upload_Controller = (req, res) => {
 };
 
 const video_Upload_Controller_Post = async (req, res) => {
-  const { title, description, hashtag, video } = req.body;
-  const reader = new global.FileReader().readAsDataURL(video);
+  const {
+    body: { title, description, hashtag, video },
+    file,
+  } = req;
 
-  console.log(reader);
+  const {
+    session: {
+      user: { _id },
+    },
+  } = req;
+
   try {
     await VideoModel.create({
+      creator: _id,
+      videoUrl: file.path,
       title,
       video,
       description,
       hashtag: VideoModel.formatHashtag(hashtag),
     });
+
     return res.redirect("/");
   } catch (error) {
     res.render("upload", error);

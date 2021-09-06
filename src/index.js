@@ -10,7 +10,7 @@ const { middleware } = require("./middleware");
 const MongoDb = require("connect-mongo");
 
 app.use(morgan("dev"));
-
+app.use("/uploads", express.static("uploads"));
 app.use(
   session({
     secret: process.env.SESSION_SECRET,

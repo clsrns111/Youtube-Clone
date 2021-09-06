@@ -16,7 +16,9 @@ html(lang="en")
                     a(href="/search") 검색하기 
                 if loggedInUser
                     li
-                        a(href="/users/edit") #{loggedInUser.name} 님
+                        a(href="/users/edit") 프로필 수정
+                    li
+                        a(href=`/users/${loggedInUser._id}`) #{loggedInUser.name} 님
                     li
                         a(href="/video/upload") 비디오 업로드하기 
                     li

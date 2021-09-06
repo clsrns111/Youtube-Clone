@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 const {
   video_Watch_Controller,
   video_Edit_Controller,
@@ -27,9 +29,9 @@ router.get(
 
 router
   .route("/upload")
-  .all(protectorMiddleware)
+  .all([protectorMiddleware])
   .get(video_Upload_Controller)
-  .post(video_Upload_Controller_Post);
+  .post(upload.single("video"), video_Upload_Controller_Post);
 
 /* router.post("/comments", video_Comments_Controller);
 router.post("/comments/delete", video_CommentDelete_Controller);

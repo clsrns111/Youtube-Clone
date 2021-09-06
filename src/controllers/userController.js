@@ -1,8 +1,17 @@
 const bcrypt = require("bcrypt");
-const { UserModel } = require("../models/User");
+const UserModel = require("../models/User");
 const fetch = require("node-fetch");
+const { VideoModel } = require("../models/Video");
 
 require("dotenv").config();
+
+const user_Profile_Controller = async (req, res) => {
+  const { id } = req.params;
+  const user_Video = await VideoModel.find({ creator: id });
+  console.log(user_Video);
+  const user = await UserModel.findById(id);
+  return res.render("profile", { title: "내 정보", user, user_Video });
+};
 
 const user_Edit_Controller = (req, res) => {
   return res.render("edit_profile", {
@@ -12,8 +21,9 @@ const user_Edit_Controller = (req, res) => {
 
 const user_Edit_Controller_Post = async (req, res) => {
   const {
-    session: { _id },
+    session: { _id, avatarUrl },
     body: { name, email, nickName },
+    file,
   } = req;
   if (
     req.session.user.nickName !== nickName ||
@@ -32,6 +42,7 @@ const user_Edit_Controller_Post = async (req, res) => {
     const newUser = await UserModel.findOneAndUpdate(
       _id,
       {
+        avatarUrl: file ? file.path : avatarUrl,
         name,
         email,
         nickName,
@@ -185,10 +196,11 @@ const user_Change_Password_Controller_Post = async (req, res, next) => {
   const user = await UserModel.findById(_id);
   user.password = new_password;
   await user.save(); //pre save() 작동됨.
-  return res.redirect("/");
+  return res.redirect("/users/logout");
 };
 
 module.exports = {
+  user_Profile_Controller,
   user_Controller,
   user_Delete_Controller,
   user_Edit_Controller,
