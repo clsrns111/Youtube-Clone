@@ -4,6 +4,7 @@ const UserModel = require("../models/User");
 const video_Watch_Controller = async (req, res) => {
   const _id = req.params.id;
   const video = await VideoModel.findById(_id).populate("creator");
+  const user = video.creator;
   const auth = video.creator._id.toString() === req.session.user._id;
 
   if (!video) {
@@ -14,12 +15,14 @@ const video_Watch_Controller = async (req, res) => {
     title: video.title,
     video,
     auth,
+    user,
   });
 };
 
 const video_Edit_Controller = async (req, res) => {
   const _id = req.params.id;
   const video = await VideoModel.findById(_id);
+  console.log(typeof _id);
   return res.render("edit", { title: `Edit: ${video.title} `, video, _id });
 };
 
@@ -68,7 +71,7 @@ const video_Upload_Controller = (req, res) => {
   res.render("upload", { title: "Upload Video" });
 };
 
-const video_Upload_Controller_Post = async (req, res) => {
+const video_Upload_Controller_Post = async (req, res, next) => {
   const {
     body: { title, description, hashtag, video },
     file,
@@ -81,14 +84,18 @@ const video_Upload_Controller_Post = async (req, res) => {
   } = req;
 
   try {
-    await VideoModel.create({
+    const newVideo = await VideoModel.create({
       creator: _id,
       videoUrl: file.path,
       title,
-      video,
       description,
       hashtag: VideoModel.formatHashtag(hashtag),
     });
+
+    const user = await UserModel.findById(_id);
+
+    user.videos.push(newVideo);
+    user.save(next); // hash가 다시한번 되는 버그발생.
 
     return res.redirect("/");
   } catch (error) {

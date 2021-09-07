@@ -11,6 +11,7 @@ const MongoDb = require("connect-mongo");
 
 app.use(morgan("dev"));
 app.use("/uploads", express.static("uploads"));
+app.use("/assets", express.static("assets"));
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
