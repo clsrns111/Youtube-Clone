@@ -2,13 +2,14 @@ extends layout/main_layout.pug
 include mixins/video
 
 block content
-    video(src=`/${video.videoUrl}` ,controls) 
-    h4 작성자: 
-        a(href=`/users/${user._id}`) #{user.name}
-    h2=video.description
-    h3 #{video.views} #{video.views === 1? "view" : "views"} 
-    small=video.hashtag
-    if auth
-        a(href=`${video.id}/edit`) Edit Video &rarr;
-        br
-        a(href=`${video.id}/delete`) Delete Video &rarr;
+    div.watch
+        video(src=`/${video.videoUrl}` ,controls) 
+        h4 작성자: 
+            a(href=`/users/${user._id}`) #{user.name}
+        h2=video.description
+        h3 #{video.views} #{video.views === 1? "view" : "views"} 
+        small=video.hashtag
+        if auth
+            a(href=`${video.id}/edit`) Edit Video &rarr;
+            br
+            a(href=`${video.id}/delete`) Delete Video &rarr;

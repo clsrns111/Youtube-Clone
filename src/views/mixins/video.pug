@@ -1,8 +1,9 @@
 mixin video(video,id)
-    div 
-        a(href=`/video/${video.id}`)=video.title 
-    p=video.description
-    each hashtag in video.hashtag
-        li=hashtag
-    small=video.createdAt
-    hr
+    div.video_index
+        div.video_thum
+        div.video_nav
+            a(href=`/video/${video.id}`)=video.title 
+            p=video.description
+            each hashtag in video.hashtag
+                li=hashtag
+    
