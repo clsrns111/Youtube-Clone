@@ -4,12 +4,27 @@ include mixins/video
 block content
     div.watch
         video(src=`/${video.videoUrl}` ,controls) 
-        h4 작성자: 
-            a(href=`/users/${user._id}`) #{user.name}
-        h2=video.description
-        h3 #{video.views} #{video.views === 1? "view" : "views"} 
-        small=video.hashtag
-        if auth
-            a(href=`${video.id}/edit`) Edit Video &rarr;
-            br
-            a(href=`${video.id}/delete`) Delete Video &rarr;
+    div#video-controls(data-state="hidden")
+        button.playpause(type="button" data-state="pause") 
+            i.fas.fa-play
+        button#mute(type="button" data-state="mute") 
+        div.progress
+            input#progress(type="range" value='0')  
+     
+        span.current_time 00:00:00 /
+        span.total_time
+        input#range(type="range") 
+        button#fs(type="button" data-state="go-fullscreen") 
+            i.fas.fa-expand-arrows-alt
+
+    h4 작성자: 
+        a(href=`/users/${user._id}`) #{user.name}
+    h2=video.description
+    h3 #{video.views} #{video.views === 1? "view" : "views"} 
+    small=video.hashtag
+    if auth
+        a(href=`${video.id}/edit`) Edit Video &rarr;
+        br
+        a(href=`${video.id}/delete`) Delete Video &rarr;
+block scripts
+    script(src="/assets/js/videoControler.js")
