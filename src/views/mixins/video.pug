@@ -1,6 +1,6 @@
 mixin video(video,id)
     div.video_index
-        div.video_thum
+        img.video_thum(src=`/${video.imgUrl}`, alt="")
         div.video_nav
             a(href=`/video/${video.id}`)=video.title 
             p=video.description

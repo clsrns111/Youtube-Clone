@@ -31,7 +31,10 @@ router
   .route("/upload")
   .all([protectorMiddleware])
   .get(video_Upload_Controller)
-  .post(upload.single("video"), video_Upload_Controller_Post);
+  .post(
+    upload.fields([{ name: "video" }, { name: "thumnail" }]),
+    video_Upload_Controller_Post
+  );
 
 /* router.post("/comments", video_Comments_Controller);
 router.post("/comments/delete", video_CommentDelete_Controller);
