@@ -28,5 +28,11 @@ block content
         a(href=`${video.id}/edit`) Edit Video &rarr;
         br
         a(href=`${video.id}/delete`) Delete Video &rarr;
+
+    div.video_comments
+        form.video_comment_form
+            textarea(name="", cols="30", rows="10")  
+            button 댓글 달기
 block scripts
     script(src="/assets/js/videoControler.js")
+    script(src="/assets/js/comment.js")

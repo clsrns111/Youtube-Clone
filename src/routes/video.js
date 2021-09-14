@@ -6,7 +6,6 @@ const {
   video_Watch_Controller,
   video_Edit_Controller,
   video_Delete_Controller,
-  video_Comments_Controller,
   video_CommentDelete_Controller,
   video_Upload_Controller,
   video_Edit_Controller_Post,
@@ -36,8 +35,6 @@ router
     video_Upload_Controller_Post
   );
 
-/* router.post("/comments", video_Comments_Controller);
 router.post("/comments/delete", video_CommentDelete_Controller);
- */
 
 module.exports = router;

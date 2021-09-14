@@ -1,5 +1,7 @@
 require("./db");
 require("./models/Video"); //model precomplie 하기위함
+require("./models/User"); //model precomplie 하기위함
+require("./models/Comment"); //model precomplie 하기위함
 
 const app = require("./index");
 

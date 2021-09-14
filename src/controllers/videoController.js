@@ -1,10 +1,13 @@
 const { VideoModel, formatHashtag } = require("../models/Video");
 const UserModel = require("../models/User");
+const CommentModel = require("../models/Comment");
 
 const video_Watch_Controller = async (req, res) => {
   try {
     const { id } = req.params;
-    const video = await VideoModel.findById(id).populate("creator");
+    const video = await VideoModel.findById(id)
+      .populate("creator")
+      .populate("comments");
     const user = video.creator;
 
     const auth = video.creator.id.toString() === req.session.user.id;
@@ -52,8 +55,28 @@ const video_Delete_Controller = async (req, res) => {
   return res.redirect("/");
 };
 
-const video_Comments_Controller = (req, res) => {
-  res.send("videoComments");
+const video_Comment = async (req, res) => {
+  const { id } = req.params;
+  const { text_value } = req.body;
+  const { user } = req.session;
+  const video = await VideoModel.findById(id).populate("comments");
+
+  if (!video) {
+    return res.sendStatus(404);
+  }
+
+  const comment = CommentModel.create({
+    owner: user,
+    text: text_value,
+    video: id,
+  });
+
+  console.log(comment._id);
+  console.log(video);
+  video.comments.push(comment._id);
+  video.save();
+
+  return res.sendStatus(201);
 };
 
 const video_CommentDelete_Controller = (req, res) => {
@@ -81,8 +104,6 @@ const video_Upload_Controller = (req, res) => {
 };
 
 const video_Upload_Controller_Post = async (req, res, next) => {
-  console.log(req.files[0]);
-
   const {
     body: { title, description, hashtag },
     files,
@@ -93,7 +114,7 @@ const video_Upload_Controller_Post = async (req, res, next) => {
       user: { _id },
     },
   } = req;
-  console.log(files.thumnail[0].path);
+
   try {
     const newVideo = await VideoModel.create({
       creator: _id,
@@ -140,6 +161,7 @@ const video_View_Account = async (req, res) => {
 };
 
 module.exports = {
+  video_Comment,
   video_View_Account,
   video_CommentDelete_Controller,
   video_Delete_Controller,
@@ -147,7 +169,6 @@ module.exports = {
   video_Search_Controller,
   home_Controller,
   video_Watch_Controller,
-  video_Comments_Controller,
   video_Upload_Controller,
   video_Edit_Controller_Post,
   video_Upload_Controller_Post,

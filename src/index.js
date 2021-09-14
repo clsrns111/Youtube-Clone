@@ -9,7 +9,7 @@ const session = require("express-session");
 const { middleware } = require("./middleware");
 const MongoDb = require("connect-mongo");
 const apiRouter = require("./routes/apiRouter");
-const fs = require("fs");
+const flash = require("express-flash-message");
 
 app.use(morgan("dev"));
 app.use((req, res, next) => {
@@ -17,6 +17,8 @@ app.use((req, res, next) => {
   res.header("Cross-Origin-Opener-Policy", "same-origin");
   next();
 });
+
+app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/assets", express.static("assets"));
 app.use("/assets", express.static("node_modules/@ffmpeg/core/dist"));

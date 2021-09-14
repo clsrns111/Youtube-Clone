@@ -112,6 +112,7 @@ const user_Login_Controller_Post = async (req, res) => {
 
 const user_Logout_Controller = (req, res) => {
   req.session.destroy();
+  req.flash("info", "BYE BYE");
   return res.redirect("/");
 };
 
