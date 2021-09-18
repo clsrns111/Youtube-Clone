@@ -4,13 +4,47 @@ const CommentModel = require("../models/Comment");
 
 const video_Watch_Controller = async (req, res) => {
   try {
+    let auth;
+    let comment_auth;
+    let session_user;
+
     const { id } = req.params;
     const video = await VideoModel.findById(id)
       .populate("creator")
       .populate("comments");
     const user = video.creator;
+    const arr = [];
 
-    const auth = video.creator.id.toString() === req.session.user.id;
+    for (let i = 0; i < video.comments.length; i++) {
+      const comment = await UserModel.findById(video.comments[i].owner);
+      if (req.session.user._id) {
+        if (comment._id.toString() === req.session.user._id) {
+          comment_auth = true;
+        } else {
+          comment_auth = false;
+        }
+      }
+      const comment_user = comment.name;
+      const comment_text = video.comments[i].text;
+      const comment_img = comment.avatarUrl;
+      const comment_id = video.comments[i]._id.toString();
+
+      arr.push({
+        comment_user,
+        comment_text,
+        comment_img,
+        comment_auth,
+        comment_id,
+      });
+    }
+
+    if (id) {
+      auth =
+        video.creator.id.toString() === req.session.user._id ? true : false;
+      session_user = req.session.user ? req.session.user.name : false;
+    } else {
+      auth = false;
+    }
 
     if (!video) {
       return res.render("404");
@@ -21,6 +55,9 @@ const video_Watch_Controller = async (req, res) => {
       video,
       auth,
       user,
+      arr,
+      comment_auth,
+      session_user,
     });
   } catch (error) {
     console.log(error);
@@ -30,7 +67,6 @@ const video_Watch_Controller = async (req, res) => {
 const video_Edit_Controller = async (req, res) => {
   const _id = req.params.id;
   const video = await VideoModel.findById(_id);
-  console.log(typeof _id);
   return res.render("edit", { title: `Edit: ${video.title} `, video, _id });
 };
 
@@ -65,22 +101,31 @@ const video_Comment = async (req, res) => {
     return res.sendStatus(404);
   }
 
-  const comment = CommentModel.create({
+  const comment = await CommentModel.create({
     owner: user,
     text: text_value,
     video: id,
   });
 
-  console.log(comment._id);
-  console.log(video);
   video.comments.push(comment._id);
   video.save();
 
   return res.sendStatus(201);
 };
 
-const video_CommentDelete_Controller = (req, res) => {
-  res.send("videoDelete");
+const video_CommentDelete_Controller = async (req, res) => {
+  const { comment_Id } = req.body;
+  const { id } = req.params;
+
+  const video = await VideoModel.findById(id).populate("comments");
+
+  for (let i = 0; i < video.comments.length; i++) {
+    console.log(video.comments[i]._id.toString(), comment_Id);
+    if (video.comments[i]._id.toString() === comment_Id) {
+      video.comments.splice(i, 1);
+      video.save();
+    }
+  }
 };
 
 const video_Search_Controller = async (req, res) => {
@@ -141,7 +186,6 @@ const home_Controller = async (req, res) => {
   try {
     const videos = await VideoModel.find();
     const loggedIn = req.session.loggedIn;
-    console.log(videos);
     res.render("home", { title: "home", videos, loggedIn });
   } catch (error) {
     console.log(error);
@@ -149,7 +193,6 @@ const home_Controller = async (req, res) => {
 };
 
 const video_View_Account = async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
   const video = await VideoModel.findById(id);
   if (!video) {

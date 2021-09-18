@@ -7,9 +7,6 @@ require("dotenv").config();
 const user_Profile_Controller = async (req, res) => {
   const { id } = req.params;
   const user = await UserModel.findById(id).populate("videos");
-  console.log(user);
-  /* const user_Video = await VideoModel.find({ creator: id });*/
-
   return res.render("profile", { title: "내 정보", user });
 };
 

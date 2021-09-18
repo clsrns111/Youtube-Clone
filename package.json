@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "bulid:server": "babel src/init.js -d build",
     "dev": "nodemon --exec babel-node src/init.js",
     "assets": "webpack --config webpack.config.js"
   },

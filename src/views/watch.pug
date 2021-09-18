@@ -19,20 +19,29 @@ block content
                 i.fas.fa-expand-arrows-alt
 
 
+    h1=video.description
+    small #{video.meta.views} #{video.meta.views === 1? "view" : "views"} 
     h4 작성자: 
         a(href=`/users/${user._id}`) #{user.name}
-    h2=video.description
-    h3 #{video.meta.views} #{video.meta.views === 1? "view" : "views"} 
     small=video.hashtag
     if auth
         a(href=`${video.id}/edit`) Edit Video &rarr;
         br
         a(href=`${video.id}/delete`) Delete Video &rarr;
-
+    hr
+    
     div.video_comments
         form.video_comment_form
-            textarea(name="", cols="30", rows="10")  
+            textarea(data-user_name=session_user)
             button 댓글 달기
+    div.all_comment
+        each el in arr
+            div.comments 
+                img(src=`${el.comment_img}`, alt="") 
+                h4 #{el.comment_user}
+                h2 #{el.comment_text}
+                if el.comment_auth
+                    h4(class='delete' data-comment_Id=el.comment_id) X
 block scripts
     script(src="/assets/js/videoControler.js")
     script(src="/assets/js/comment.js")
